@@ -8,6 +8,20 @@
   </head>
   <body>
     <div id="app"></div>
+    <div data-audio-player>
+      <button
+        data-play-button
+        data-playing="false"
+        role="switch"
+        aria-checked="false"
+      >
+        <span>Play/Pause</span>
+      </button>
+      <input data-gain-control type="range" id="volume" min="0" max="1" value="1" step="0.001" />
+      <input data-pan-control type="range" id="panner" min="-1" max="1" value="0" step="0.01" />
+
+      <audio src="6_raid_-_words_outro.mp3"></audio>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
