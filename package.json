@@ -1,16 +1,21 @@
 {
   "name": "waatsynth",
-  "version": "1.0.0",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "vite": "^5.1.4"
   }
 }
