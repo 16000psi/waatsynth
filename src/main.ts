@@ -1,4 +1,5 @@
-// import { organ_2 } from '.wavetables/organ_2'
+import WaveTableData from "./wavetables/organ_2";
+import { WaveTable } from "./wavetables/organ_2";
 class AudioManager {
   public audioContext: AudioContext;
 
@@ -31,6 +32,7 @@ class InputStage {
   }
 
   async handlePlayButton() {
+    console.log("track 6")
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
@@ -48,6 +50,46 @@ class InputStage {
 
   connectBefore(targetModule: OutputStage) {
     this.lastNode.connect(targetModule.firstNode);
+  }
+}
+
+class Sweep {
+  private audioContext: AudioContext;
+  private node: Element;
+  private wavetable: WaveTable;
+  private playButton: HTMLElement;
+  private wave: PeriodicWave;
+
+  constructor(node: Element, audioManager: AudioManager) {
+    this.node = node;
+    this.playButton = this.node.querySelector(
+      "[data-play-sweep]",
+    ) as HTMLElement;
+    this.playButton.addEventListener("click", () => this.handlePlayButton());
+
+    this.audioContext = audioManager.audioContext;
+    this.wavetable = WaveTableData;
+
+    this.wave = new PeriodicWave(this.audioContext, {
+      real: this.wavetable.real,
+      imag: this.wavetable.imag,
+    });
+  }
+
+  handlePlayButton() {
+    this.playSweep(2);
+  }
+
+  playSweep(time: number) {
+    console.log("playSweep")
+    const osc = new OscillatorNode(this.audioContext, {
+      frequency: 380,
+      type: "custom",
+      periodicWave: this.wave,
+    });
+    osc.connect(this.audioContext.destination);
+    osc.start(time);
+    osc.stop(time + 1);
   }
 }
 
@@ -99,6 +141,7 @@ const master: AudioManager = new AudioManager();
 
 let input: InputStage | undefined;
 let output: OutputStage | undefined;
+let sweep: Sweep | undefined;
 
 const inputElement: Element | null = document.querySelector(
   "[data-audio-player]",
@@ -117,4 +160,11 @@ if (outputElement) {
 if (input && output) {
   input.connectBefore(output);
   output.connectToDestination();
+}
+
+const sweepElement: Element | null = document.querySelector(
+  "[data-sweep]",
+);
+if (sweepElement) {
+  sweep = new Sweep(sweepElement, master);
 }
